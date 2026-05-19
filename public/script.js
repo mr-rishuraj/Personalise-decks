@@ -23,6 +23,10 @@ const copyDocBtn = document.getElementById('copyDocBtn');
 const copyFigmaBtn = document.getElementById('copyFigmaBtn');
 const openFigmaBtn = document.getElementById('openFigmaBtn');
 const copyClaudeBtn = document.getElementById('copyClaudeBtn');
+const viewFullDocBtn = document.getElementById('viewFullDocBtn');
+const docModal = document.getElementById('docModal');
+const closeModalBtn = document.getElementById('closeModalBtn');
+const modalDocContent = document.getElementById('modalDocContent');
 
 let generatedData = null;
 const DEFAULT_PITCH_DECK = 'Ignite_25_pitchdeck.pdf';
@@ -169,9 +173,13 @@ function displayResults(data) {
   emptyState.classList.add('hidden');
   outputContainer.classList.remove('hidden');
 
-  // Display document preview
+  // Display document preview (full in panel)
   if (data.documentText) {
-    docPreview.textContent = data.documentText.substring(0, 2000) + '...';
+    // Show formatted preview in right panel
+    docPreview.innerHTML = formatDocumentForDisplay(data.documentText);
+
+    // Show buttons
+    viewFullDocBtn.style.display = 'inline-block';
     downloadDocBtn.style.display = 'inline-block';
     copyDocBtn.style.display = 'inline-block';
   }
@@ -238,3 +246,80 @@ copyClaudeBtn.addEventListener('click', () => {
     });
   }
 });
+
+// View full document in modal
+viewFullDocBtn.addEventListener('click', () => {
+  if (generatedData && generatedData.documentText) {
+    modalDocContent.innerHTML = formatDocumentForDisplay(generatedData.documentText);
+    docModal.classList.remove('hidden');
+  }
+});
+
+// Close modal
+closeModalBtn.addEventListener('click', () => {
+  docModal.classList.add('hidden');
+});
+
+// Close modal when clicking outside
+docModal.addEventListener('click', (e) => {
+  if (e.target === docModal) {
+    docModal.classList.add('hidden');
+  }
+});
+
+// Helper function to format document text as HTML
+function formatDocumentForDisplay(text) {
+  let html = text;
+
+  // Convert markdown headers to HTML
+  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+
+  // Convert bold and italic
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+
+  // Convert line breaks to paragraphs
+  const lines = html.split('\n');
+  let inTable = false;
+  let result = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+
+    if (line.startsWith('|')) {
+      if (!inTable) {
+        result.push('<table>');
+        inTable = true;
+      }
+
+      const cells = line.split('|').filter(c => c.trim());
+      const isHeader = i === 1 || lines[i - 1].includes('---');
+
+      if (isHeader) {
+        result.push('<tr>' + cells.map(c => `<th>${c.trim()}</th>`).join('') + '</tr>');
+      } else if (line !== '' && !line.includes('---')) {
+        result.push('<tr>' + cells.map(c => `<td>${c.trim()}</td>`).join('') + '</tr>');
+      }
+    } else {
+      if (inTable) {
+        result.push('</table>');
+        inTable = false;
+      }
+
+      if (line && !line.includes('---')) {
+        if (line.startsWith('<h')) {
+          result.push(line);
+        } else if (line) {
+          result.push(`<p>${line}</p>`);
+        }
+      }
+    }
+  }
+
+  if (inTable) {
+    result.push('</table>');
+  }
+
+  return result.join('');
+}

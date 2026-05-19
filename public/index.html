@@ -241,6 +241,9 @@
             <p style="text-align: center; color: #999;">Document preview will appear here...</p>
           </div>
           <div class="output-actions">
+            <button id="viewFullDocBtn" class="btn-action" style="display:none;">
+              🖥️ View Full Document
+            </button>
             <button id="downloadDocBtn" class="btn-action" style="display:none;">
               ⬇️ Download .docx
             </button>
@@ -291,6 +294,19 @@
         <div class="empty-icon">📝</div>
         <h2>No Document Generated Yet</h2>
         <p>Fill out the form on the left and click "Generate Document & Prompt" to create your personalized partnership proposal.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FULL-SCREEN DOCUMENT MODAL -->
+  <div id="docModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Full Document Preview</h2>
+        <button id="closeModalBtn" class="modal-close">✕</button>
+      </div>
+      <div id="modalDocContent" class="modal-body">
+        <!-- Full document will be rendered here -->
       </div>
     </div>
   </div>
