@@ -25,31 +25,51 @@ async function generateWithGemini(payload) {
 
 async function callGemini(prompt) {
   const url = `${GEMINI_API_URL}?key=${GEMINI_API_KEY}`;
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      contents: [{
-        parts: [{
-          text: prompt
-        }]
-      }],
-      generationConfig: {
-        temperature: 0.7,
-        topK: 40,
-        topP: 0.95,
-        maxOutputTokens: 4096,
-      }
-    })
-  }).then(res => res.json());
 
-  if (!response.candidates || !response.candidates[0]) {
-    throw new Error('No response from Gemini API');
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [{
+          parts: [{
+            text: prompt
+          }]
+        }],
+        generationConfig: {
+          temperature: 0.7,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: 4096,
+        }
+      })
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error('Gemini API Error Response:', errorText);
+      throw new Error(`Gemini API Error (${res.status}): ${errorText.substring(0, 200)}`);
+    }
+
+    const response = await res.json();
+
+    if (!response.candidates || !response.candidates[0]) {
+      console.error('Invalid Gemini response structure:', response);
+      throw new Error('No response from Gemini API - Invalid response structure');
+    }
+
+    if (!response.candidates[0].content || !response.candidates[0].content.parts || !response.candidates[0].content.parts[0]) {
+      console.error('Invalid content structure:', response.candidates[0]);
+      throw new Error('No content in Gemini response');
+    }
+
+    return response.candidates[0].content.parts[0].text;
+  } catch (error) {
+    console.error('Gemini API Call Error:', error);
+    throw error;
   }
-
-  return response.candidates[0].content.parts[0].text;
 }
 
 function buildDocumentPrompt(payload) {

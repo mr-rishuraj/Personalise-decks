@@ -50,10 +50,22 @@ module.exports = async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error('Error:', error);
-    return res.status(500).json({
-      message: error.message || 'Internal server error',
-      error: error.toString()
+    console.error('API Error:', error.message || error);
+    console.error('Full error:', error);
+
+    // Check if it's a known error type
+    let statusCode = 500;
+    let message = error.message || 'Internal server error';
+
+    if (message.includes('API')) {
+      statusCode = 503;
+      message = `API Error: ${message}`;
+    }
+
+    return res.status(statusCode).json({
+      message: message,
+      error: error.toString(),
+      type: error.name
     });
   }
 }
