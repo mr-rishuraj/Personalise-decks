@@ -5,7 +5,7 @@ module.exports = async function handler(req, res) {
 
   try {
     const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'AIzaSyCQyMENqk_FdAwBIr4w0vq3LXYQaQiir0k';
-    const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent';
+    const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta1/models/gemini-pro:generateContent';
 
     console.log('Testing Gemini API...');
     console.log('API Key exists:', !!GEMINI_API_KEY);
