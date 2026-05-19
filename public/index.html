@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personalise Decks - Partnership Proposal Generator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- LEFT PANEL - INPUT -->
+    <div class="panel left-panel">
+      <h1>📋 Generate Proposal</h1>
+
+      <form id="generatorForm">
+        <!-- SECTION 1: Basic Info -->
+        <section class="form-section">
+          <h2>Basic Information</h2>
+
+          <div class="form-group">
+            <label for="title">Partnership Title *</label>
+            <input type="text" id="title" name="title" placeholder="e.g., PIEDS & AirPay Partnership" required>
+          </div>
+
+          <div class="form-group">
+            <label for="eventName">Event Name *</label>
+            <input type="text" id="eventName" name="eventName" placeholder="e.g., Ignite 2026" required>
+          </div>
+
+          <div class="form-group">
+            <label for="yourOrg">Your Organization Name *</label>
+            <input type="text" id="yourOrg" name="yourOrg" placeholder="e.g., PIEDS" required>
+          </div>
+
+          <div class="form-group">
+            <label for="companyName">Partner Company Name *</label>
+            <input type="text" id="companyName" name="companyName" placeholder="e.g., AirPay" required>
+          </div>
+        </section>
+
+        <!-- SECTION 2: Files & Content -->
+        <section class="form-section">
+          <h2>Files & Company Information</h2>
+
+          <div class="form-group">
+            <label for="momFile">Minutes of Meeting (MoM)</label>
+            <input type="file" id="momFile" name="momFile" accept=".pdf,.txt,.docx">
+            <small>Upload PDF, TXT, or DOCX file</small>
+          </div>
+
+          <div class="form-group">
+            <label for="pitchDeckLink">Pitch Deck (Google Drive Link or PDF)</label>
+            <input type="text" id="pitchDeckLink" name="pitchDeckLink" placeholder="https://drive.google.com/... or paste PDF text">
+            <small>Paste Google Drive link or upload PDF</small>
+          </div>
+
+          <div class="form-group">
+            <label>Company Information *</label>
+            <div class="radio-group">
+              <label><input type="radio" name="companyInfoType" value="website" checked> Website URL</label>
+              <label><input type="radio" name="companyInfoType" value="text"> Paste Text (10k words max)</label>
+            </div>
+          </div>
+
+          <div class="form-group" id="websiteGroup">
+            <label for="companyWebsite">Company Website</label>
+            <input type="url" id="companyWebsite" name="companyWebsite" placeholder="https://example.com">
+          </div>
+
+          <div class="form-group hidden" id="companyTextGroup">
+            <label for="companyText">Company Details</label>
+            <textarea id="companyText" name="companyText" placeholder="Paste company details, business model, values, etc. (max 10,000 words)" rows="6"></textarea>
+            <small id="wordCount">0 / 10,000 words</small>
+          </div>
+
+          <div class="form-group">
+            <label for="additionalNotes">Additional Requirements / Notes</label>
+            <textarea id="additionalNotes" name="additionalNotes" placeholder="Any specific requirements, focus areas, or additional context" rows="4"></textarea>
+          </div>
+        </section>
+
+        <!-- SECTION 3: Document Customization -->
+        <section class="form-section">
+          <h2>Document Customization</h2>
+
+          <div class="form-group">
+            <label for="docLength">Document Length</label>
+            <select id="docLength" name="docLength">
+              <option value="4">4 Pages (Concise)</option>
+              <option value="6" selected>6 Pages (Standard)</option>
+              <option value="8">8 Pages (Detailed)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="tone">Tone & Style</label>
+            <select id="tone" name="tone">
+              <option value="formal">Formal & Professional</option>
+              <option value="balanced" selected>Balanced</option>
+              <option value="startup">Startup / Casual</option>
+              <option value="innovative">Innovative & Forward-thinking</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="primaryColor">Primary Color (for headings)</label>
+            <input type="color" id="primaryColor" name="primaryColor" value="#1F3864">
+          </div>
+
+          <div class="form-group">
+            <label for="secondaryColor">Secondary Color</label>
+            <input type="color" id="secondaryColor" name="secondaryColor" value="#2E5090">
+          </div>
+
+          <div class="form-group">
+            <label for="logoUrl">Logo URL (optional)</label>
+            <input type="url" id="logoUrl" name="logoUrl" placeholder="https://example.com/logo.png">
+          </div>
+
+          <div class="form-group">
+            <label for="fontStyle">Font Style</label>
+            <select id="fontStyle" name="fontStyle">
+              <option value="arial" selected>Arial (Professional)</option>
+              <option value="calibri">Calibri</option>
+              <option value="georgia">Georgia (Elegant)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Sections to Include</label>
+            <div class="checkbox-group">
+              <label><input type="checkbox" name="sections" value="overview" checked> Overview</label>
+              <label><input type="checkbox" name="sections" value="conversation" checked> From Our Conversation</label>
+              <label><input type="checkbox" name="sections" value="comparison" checked> Why This Event</label>
+              <label><input type="checkbox" name="sections" value="challenge" checked> Challenge Structure</label>
+              <label><input type="checkbox" name="sections" value="deliverables" checked> Deliverables</label>
+              <label><input type="checkbox" name="sections" value="timeline" checked> Timeline</label>
+              <label><input type="checkbox" name="sections" value="responsibilities" checked> Responsibilities</label>
+              <label><input type="checkbox" name="sections" value="strategic" checked> Strategic Value</label>
+              <label><input type="checkbox" name="sections" value="impact" checked> Impact on Your Company</label>
+              <label><input type="checkbox" name="sections" value="future" checked> Future Opportunities</label>
+              <label><input type="checkbox" name="sections" value="next" checked> Next Steps</label>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 4: Figma Prompt Customization -->
+        <section class="form-section">
+          <h2>Figma Design Prompt</h2>
+
+          <div class="form-group">
+            <label for="designStyle">Design Style</label>
+            <select id="designStyle" name="designStyle">
+              <option value="modern" selected>Modern & Minimalist</option>
+              <option value="bold">Bold & Statement</option>
+              <option value="elegant">Elegant & Professional</option>
+              <option value="playful">Playful & Creative</option>
+              <option value="corporate">Corporate & Formal</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="designTone">Design Tone</label>
+            <select id="designTone" name="designTone">
+              <option value="professional" selected>Professional</option>
+              <option value="creative">Creative</option>
+              <option value="startup">Startup</option>
+              <option value="innovative">Innovative</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Mockup Types to Include</label>
+            <div class="checkbox-group">
+              <label><input type="checkbox" name="mockups" value="slide" checked> Slide Designs</label>
+              <label><input type="checkbox" name="mockups" value="thumbnail" checked> Thumbnails</label>
+              <label><input type="checkbox" name="mockups" value="animation"> Animation Notes</label>
+              <label><input type="checkbox" name="mockups" value="mobile"> Mobile View</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="figmaStructure">Figma File Structure</label>
+            <select id="figmaStructure" name="figmaStructure">
+              <option value="flat" selected>Flat (All on one page)</option>
+              <option value="nested">Nested (Multiple pages by section)</option>
+              <option value="components">Component-based</option>
+            </select>
+          </div>
+        </section>
+
+        <!-- SECTION 5: API Choice -->
+        <section class="form-section">
+          <h2>AI Model Choice</h2>
+          <div class="form-group">
+            <label for="apiChoice">Which AI to use?</label>
+            <select id="apiChoice" name="apiChoice">
+              <option value="gemini" selected>Google Gemini (Free tier available)</option>
+              <option value="claude">Claude 3.5 (Requires API key)</option>
+            </select>
+          </div>
+
+          <div class="form-group hidden" id="claudeKeyGroup">
+            <label for="claudeKey">Claude API Key</label>
+            <input type="password" id="claudeKey" name="claudeKey" placeholder="sk-...">
+          </div>
+        </section>
+
+        <!-- SUBMIT BUTTON -->
+        <button type="submit" class="btn-generate" id="submitBtn">✨ Generate Document & Prompt</button>
+        <div id="loadingIndicator" class="hidden">
+          <div class="spinner"></div>
+          <p>Generating your proposal...</p>
+        </div>
+      </form>
+    </div>
+
+    <!-- RIGHT PANEL - OUTPUT -->
+    <div class="panel right-panel">
+      <div class="output-header">
+        <h1>📄 Output Preview</h1>
+        <div id="outputStatus" class="status-box hidden"></div>
+      </div>
+
+      <div id="outputContainer" class="output-container hidden">
+        <!-- DOCUMENT PREVIEW -->
+        <section class="output-section">
+          <h2>Generated Document</h2>
+          <div id="docPreview" class="doc-preview">
+            <p style="text-align: center; color: #999;">Document preview will appear here...</p>
+          </div>
+          <div class="output-actions">
+            <button id="downloadDocBtn" class="btn-action" style="display:none;">
+              ⬇️ Download .docx
+            </button>
+            <button id="copyDocBtn" class="btn-action" style="display:none;">
+              📋 Copy as Text
+            </button>
+          </div>
+        </section>
+
+        <!-- FIGMA PROMPT -->
+        <section class="output-section">
+          <h2>Figma Design Prompt</h2>
+          <div id="figmaPromptPreview" class="prompt-preview">
+            <p style="text-align: center; color: #999;">Figma prompt will appear here...</p>
+          </div>
+          <div class="output-actions">
+            <button id="copyFigmaBtn" class="btn-action" style="display:none;">
+              📋 Copy to Clipboard
+            </button>
+            <button id="openFigmaBtn" class="btn-action" style="display:none;">
+              🎨 Open in Figma
+            </button>
+          </div>
+        </section>
+
+        <!-- CLAUDE DESIGN PROMPT -->
+        <section class="output-section">
+          <h2>Claude Design Prompt</h2>
+          <div id="claudePromptPreview" class="prompt-preview">
+            <p style="text-align: center; color: #999;">Claude Design prompt will appear here...</p>
+          </div>
+          <div class="output-actions">
+            <button id="copyClaudeBtn" class="btn-action" style="display:none;">
+              📋 Copy to Clipboard
+            </button>
+          </div>
+        </section>
+
+        <!-- METADATA -->
+        <section class="output-section meta">
+          <h3>Generation Info</h3>
+          <div id="generationMeta" style="font-size: 0.9em; color: #666;"></div>
+        </section>
+      </div>
+
+      <!-- EMPTY STATE -->
+      <div id="emptyState" class="empty-state">
+        <div class="empty-icon">📝</div>
+        <h2>No Document Generated Yet</h2>
+        <p>Fill out the form on the left and click "Generate Document & Prompt" to create your personalized partnership proposal.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
