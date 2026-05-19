@@ -1,4 +1,4 @@
-const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, BorderStyle } = require('docx');
+const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, BorderStyle, Table, TableRow, TableCell } = require('docx');
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -54,29 +54,54 @@ async function generateDocumentWithGemini(payload) {
   const sections = payload.sections ? payload.sections.join(', ') : 'all';
   const toneDesc = getToneDescription(payload.tone);
 
-  const prompt = `You are a professional business proposal writer. Create a ${payload.docLength}-page strategic partnership proposal between ${payload.yourOrg} and ${payload.companyName} for the ${payload.eventName} event.
+  const prompt = `You are an expert business proposal writer creating a professional, polished ${payload.docLength}-page strategic partnership proposal between ${payload.yourOrg} and ${payload.companyName} for ${payload.eventName}.
+
+CRITICAL FORMATTING REQUIREMENTS:
+1. Use CLEAN, PROFESSIONAL language - NO bullet point symbols in markdown, use natural formatting
+2. Structure clearly with numbered headers: ## 1. Title, ## 2. Title, etc.
+3. Use ONLY these markdown elements: ## headers, **bold**, *italics*, and plain paragraphs
+4. For tables: Use proper markdown table format with | separators
+5. Keep paragraphs SHORT (2-3 sentences max)
+6. NO page break markers or "●" symbols
+7. ENSURE document is COMPLETE - all sections must be finished
+8. Professional, startup ecosystem tone
+9. Focus on BUSINESS VALUE and MUTUAL BENEFITS
+
+Create a ${payload.docLength}-page strategic partnership proposal between ${payload.yourOrg} and ${payload.companyName} for the ${payload.eventName} event.
 
 Context:
-- Your Organization: ${payload.yourOrg}
-- Partner Company: ${payload.companyName}
+- Organization: ${payload.yourOrg}
+- Partner: ${payload.companyName}
 - Event: ${payload.eventName}
-${payload.companyWebsite ? `- Company Website: ${payload.companyWebsite}` : ''}
-${payload.companyText ? `- Company Details: ${payload.companyText.substring(0, 500)}...` : ''}
-${payload.additionalNotes ? `- Additional Requirements: ${payload.additionalNotes}` : ''}
+${payload.companyWebsite ? `- Website: ${payload.companyWebsite}` : ''}
+${payload.companyText ? `- Details: ${payload.companyText.substring(0, 300)}...` : ''}
+${payload.additionalNotes ? `- Notes: ${payload.additionalNotes}` : ''}
 
-Tone & Style: ${toneDesc}
-Sections to Include: ${sections}
+Tone: ${toneDesc}
 
-Instructions:
-1. Make it professional and scannable
-2. Use bullet points and tables instead of long paragraphs
-3. Keep prose minimal (max 2-3 sentences per paragraph)
-4. Focus on business value and partnership benefits
-5. Ensure exactly ${payload.docLength} pages
-6. Use professional language with startup ecosystem tone
-7. Maximize white space and readability
+REQUIRED STRUCTURE (${payload.docLength} pages):
+1. Executive Summary - Overview of partnership
+2. Partnership Context - Why now, shared vision
+3. Strategic Fit - Complementary strengths and comparison table
+4. Proposed Deliverables - Concrete outputs (use table format)
+5. Timeline & Milestones - Key dates (use table format)
+6. Responsibilities - Who does what (use table format)
+7. Strategic Value - Benefits for both parties
+8. KPIs & Success Metrics - How we measure success
+9. Next Steps & Contact
 
-Create the proposal content in clean, formatted text.`;
+FORMATTING RULES:
+- Use clean markdown tables with | separators for all comparisons and timelines
+- Headers: ## Section Title (exactly like this)
+- NO bullet symbols (●, -, •) - use natural prose
+- Bold **important terms**
+- Keep sentences short and punchy
+- Use tables liberally for clarity
+- COMPLETE ALL SECTIONS - NO TRUNCATION
+- Professional, confident tone
+- Focus on mutual value and concrete outcomes
+
+Generate EXACTLY ${payload.docLength} pages of polished, professional content.`;
 
   try {
     const url = `${GEMINI_API_URL}?key=${GEMINI_API_KEY}`;
@@ -194,36 +219,77 @@ async function createWordDoc(content) {
     const lines = content.split('\n');
     const children = [];
 
-    lines.forEach((line, index) => {
-      if (line.startsWith('##')) {
-        children.push(
-          new Paragraph({
-            text: line.replace(/^#+\s*/, ''),
-            heading: HeadingLevel.HEADING_2,
-            spacing: { before: 200, after: 100 },
-            bold: true
-          })
-        );
-      } else if (line.startsWith('-') || line.startsWith('•')) {
-        children.push(
-          new Paragraph({
-            text: line.replace(/^[-•]\s*/, ''),
-            bullet: { level: 0 },
-            spacing: { after: 100 }
-          })
-        );
-      } else if (line.trim()) {
-        children.push(
-          new Paragraph({
-            text: line,
-            spacing: { after: 200 }
-          })
-        );
+    // Add title
+    children.push(
+      new Paragraph({
+        text: 'STRATEGIC PARTNERSHIP PROPOSAL',
+        heading: HeadingLevel.HEADING_1,
+        spacing: { before: 0, after: 300 },
+        alignment: AlignmentType.CENTER,
+        bold: true
+      })
+    );
+
+    let i = 0;
+    while (i < lines.length) {
+      const line = lines[i];
+      const trimmed = line.trim();
+
+      if (!trimmed) {
+        i++;
+        continue;
       }
-    });
+
+      // Headers
+      if (trimmed.startsWith('##')) {
+        const headerText = trimmed.replace(/^#+\s*/, '').trim();
+        children.push(
+          new Paragraph({
+            text: headerText,
+            heading: HeadingLevel.HEADING_2,
+            spacing: { before: 300, after: 150 },
+            bold: true,
+            thematicBreak: false
+          })
+        );
+        i++;
+
+      } else if (trimmed.startsWith('|')) {
+        // Parse and add table
+        const tableLines = [];
+        while (i < lines.length && lines[i].trim().startsWith('|')) {
+          tableLines.push(lines[i].trim());
+          i++;
+        }
+
+        if (tableLines.length > 2) {
+          const table = createTable(tableLines);
+          children.push(table);
+          children.push(new Paragraph({ text: '', spacing: { after: 150 } }));
+        }
+
+      } else {
+        // Regular paragraph
+        const paragraph = new Paragraph({
+          text: trimmed,
+          spacing: { after: 150 },
+          alignment: AlignmentType.JUSTIFIED
+        });
+        children.push(paragraph);
+        i++;
+      }
+    }
 
     const doc = new Document({
       sections: [{
+        properties: {
+          margins: {
+            top: 1440,    // 1 inch
+            bottom: 1440,
+            left: 1440,
+            right: 1440
+          }
+        },
         children: children
       }]
     });
@@ -235,4 +301,57 @@ async function createWordDoc(content) {
     console.error('Word doc creation error:', error);
     throw new Error(`Failed to create Word document: ${error.message}`);
   }
+}
+
+function createTable(lines) {
+  const rows = [];
+  const cells = lines[0].split('|').filter(c => c.trim()).map(c => c.trim());
+
+  // Header row
+  const headerCells = cells.map(cell =>
+    new TableCell({
+      children: [
+        new Paragraph({
+          text: cell,
+          bold: true,
+          alignment: AlignmentType.CENTER
+        })
+      ],
+      shading: {
+        type: 'clear',
+        fill: 'D3D3D3'
+      }
+    })
+  );
+
+  rows.push(new TableRow({
+    children: headerCells
+  }));
+
+  // Data rows (skip separator line at index 1)
+  for (let i = 2; i < lines.length; i++) {
+    const rowCells = lines[i].split('|').filter(c => c.trim()).map(c => c.trim());
+    const dataCells = rowCells.map(cell =>
+      new TableCell({
+        children: [
+          new Paragraph({
+            text: cell,
+            alignment: AlignmentType.LEFT
+          })
+        ]
+      })
+    );
+
+    rows.push(new TableRow({
+      children: dataCells
+    }));
+  }
+
+  return new Table({
+    rows: rows,
+    width: {
+      size: 100,
+      type: 'pct'
+    }
+  });
 }
