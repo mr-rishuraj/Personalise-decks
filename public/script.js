@@ -25,6 +25,15 @@ const openFigmaBtn = document.getElementById('openFigmaBtn');
 const copyClaudeBtn = document.getElementById('copyClaudeBtn');
 
 let generatedData = null;
+const DEFAULT_PITCH_DECK = 'Ignite_25_pitchdeck.pdf';
+
+// Initialize with default values
+window.addEventListener('DOMContentLoaded', () => {
+  const pitchDeckInput = document.getElementById('pitchDeckLink');
+  if (pitchDeckInput && pitchDeckInput.value === '[Default: Ignite_25_pitchdeck.pdf loaded]') {
+    console.log('📎 Default pitch deck loaded: ' + DEFAULT_PITCH_DECK);
+  }
+});
 
 // Toggle company info input type
 companyInfoTypeRadios.forEach(radio => {
@@ -81,7 +90,13 @@ async function generateDocument() {
 
     // Handle file uploads
     const momFile = document.getElementById('momFile').files[0];
-    const pitchDeckLink = document.getElementById('pitchDeckLink').value;
+    let pitchDeckLink = document.getElementById('pitchDeckLink').value;
+
+    // Use default pitch deck if not changed
+    if (pitchDeckLink === '[Default: Ignite_25_pitchdeck.pdf loaded]' || !pitchDeckLink) {
+      pitchDeckLink = DEFAULT_PITCH_DECK;
+      console.log('📎 Using default pitch deck');
+    }
 
     // Build request payload
     const payload = {

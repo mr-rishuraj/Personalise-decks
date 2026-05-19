@@ -55,6 +55,7 @@ async function callGemini(prompt) {
 function buildDocumentPrompt(payload) {
   const sections = payload.sections.join(', ');
   const toneDesc = getToneDescription(payload.tone);
+  const isPitchDeckDefault = payload.pitchDeckContent === 'Ignite_25_pitchdeck.pdf';
 
   return `You are a professional business proposal writer. Create a ${payload.docLength}-page strategic partnership proposal between ${payload.yourOrg} and ${payload.companyName} for the ${payload.eventName} event.
 
@@ -62,6 +63,7 @@ Context:
 - Your Organization: ${payload.yourOrg}
 - Partner Company: ${payload.companyName}
 - Event: ${payload.eventName}
+${isPitchDeckDefault ? `- Event Pitch Deck: Using default Ignite 2025 pitch deck context` : `- Pitch Deck Info: ${payload.pitchDeckContent}`}
 ${payload.companyWebsite ? `- Company Website: ${payload.companyWebsite}` : ''}
 ${payload.companyText ? `- Company Details: ${payload.companyText}` : ''}
 ${payload.additionalNotes ? `- Additional Requirements: ${payload.additionalNotes}` : ''}

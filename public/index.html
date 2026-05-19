@@ -13,23 +13,34 @@
       <h1>📋 Generate Proposal</h1>
 
       <form id="generatorForm">
+        <!-- DEFAULTS NOTE -->
+        <div style="background: #E3F2FD; border-left: 4px solid #2196F3; padding: 1rem; margin-bottom: 1.5rem; border-radius: 0.4rem;">
+          <strong>💡 Pre-filled with PIEDS defaults:</strong>
+          <ul style="margin: 0.5rem 0 0 1.5rem; font-size: 0.95rem;">
+            <li>Event: <strong>Ignite 2026</strong></li>
+            <li>Organization: <strong>PIEDS</strong></li>
+            <li>Pitch Deck: <strong>Ignite_25_pitchdeck.pdf</strong></li>
+          </ul>
+          <small style="color: #666;">Feel free to change any of these for other companies/events</small>
+        </div>
+
         <!-- SECTION 1: Basic Info -->
         <section class="form-section">
           <h2>Basic Information</h2>
 
           <div class="form-group">
             <label for="title">Partnership Title *</label>
-            <input type="text" id="title" name="title" placeholder="e.g., PIEDS & AirPay Partnership" required>
+            <input type="text" id="title" name="title" placeholder="e.g., PIEDS & AirPay Partnership" value="PIEDS & Partner Summit" required>
           </div>
 
           <div class="form-group">
             <label for="eventName">Event Name *</label>
-            <input type="text" id="eventName" name="eventName" placeholder="e.g., Ignite 2026" required>
+            <input type="text" id="eventName" name="eventName" placeholder="e.g., Ignite 2026" value="Ignite 2026" required>
           </div>
 
           <div class="form-group">
             <label for="yourOrg">Your Organization Name *</label>
-            <input type="text" id="yourOrg" name="yourOrg" placeholder="e.g., PIEDS" required>
+            <input type="text" id="yourOrg" name="yourOrg" placeholder="e.g., PIEDS" value="PIEDS" required>
           </div>
 
           <div class="form-group">
@@ -50,8 +61,8 @@
 
           <div class="form-group">
             <label for="pitchDeckLink">Pitch Deck (Google Drive Link or PDF)</label>
-            <input type="text" id="pitchDeckLink" name="pitchDeckLink" placeholder="https://drive.google.com/... or paste PDF text">
-            <small>Paste Google Drive link or upload PDF</small>
+            <input type="text" id="pitchDeckLink" name="pitchDeckLink" placeholder="https://drive.google.com/... or paste PDF text" value="[Default: Ignite_25_pitchdeck.pdf loaded]">
+            <small>🎯 Default pitch deck pre-loaded. Paste Google Drive link or URL to replace</small>
           </div>
 
           <div class="form-group">
