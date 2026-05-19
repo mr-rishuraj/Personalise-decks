@@ -27,8 +27,21 @@ const viewFullDocBtn = document.getElementById('viewFullDocBtn');
 const docModal = document.getElementById('docModal');
 const closeModalBtn = document.getElementById('closeModalBtn');
 const modalDocContent = document.getElementById('modalDocContent');
+const loadingScreen = document.getElementById('loadingScreen');
+const loadingStep = document.getElementById('loadingStep');
 
 let generatedData = null;
+
+// Loading steps for animation
+const loadingSteps = [
+  'Analyzing content...',
+  'Generating document...',
+  'Creating formatting...',
+  'Preparing prompts...',
+  'Finalizing output...'
+];
+
+let currentStep = 0;
 const DEFAULT_PITCH_DECK = 'Ignite_25_pitchdeck.pdf';
 
 // Initialize with default values
@@ -85,8 +98,18 @@ form.addEventListener('submit', async (e) => {
 
 async function generateDocument() {
   submitBtn.disabled = true;
-  loadingIndicator.classList.remove('hidden');
+  loadingScreen.classList.remove('hidden');
   outputStatus.classList.add('hidden');
+
+  // Start loading step animation
+  let stepInterval;
+  currentStep = 0;
+  stepInterval = setInterval(() => {
+    if (currentStep < loadingSteps.length) {
+      loadingStep.textContent = loadingSteps[currentStep];
+      currentStep++;
+    }
+  }, 800);
 
   try {
     // Collect form data
@@ -153,19 +176,20 @@ async function generateDocument() {
     // Display results
     displayResults(result);
 
-    loadingIndicator.classList.add('hidden');
+    loadingScreen.classList.add('hidden');
     outputStatus.classList.remove('hidden');
     outputStatus.innerHTML = '✅ Document generated successfully!';
     outputStatus.style.background = 'var(--success)';
 
   } catch (error) {
     console.error('Error:', error);
-    loadingIndicator.classList.add('hidden');
+    loadingScreen.classList.add('hidden');
     outputStatus.classList.remove('hidden');
     outputStatus.innerHTML = `❌ Error: ${error.message}`;
     outputStatus.style.background = 'var(--error)';
   } finally {
     submitBtn.disabled = false;
+    clearInterval(stepInterval);
   }
 }
 
