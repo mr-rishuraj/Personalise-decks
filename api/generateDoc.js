@@ -145,52 +145,199 @@ Generate EXACTLY ${payload.docLength} pages of polished, professional content.`;
 function generateFigmaPrompt(payload) {
   const mockupTypes = payload.mockups ? payload.mockups.join(', ') : 'slides and thumbnails';
   const styleDesc = getDesignStyleDescription(payload.designStyle);
+  const sections = payload.sections ? payload.sections.join(', ') : 'standard partnership sections';
 
-  return `Design Brief for Figma - ${payload.companyName} Partnership Deck
+  return `# Figma Design Brief: ${payload.companyName} x ${payload.yourOrg} Partnership Deck
+## For: ${payload.eventName}
 
-Event: ${payload.eventName}
-Organization: ${payload.yourOrg}
-Partner: ${payload.companyName}
+---
 
-Design Requirements:
-- Style: ${styleDesc}
-- Tone: ${payload.designTone}
-- Mockup Types: ${mockupTypes}
-- File Structure: ${payload.figmaStructure}
-- Primary Color: ${payload.primaryColor}
-- Secondary Color: ${payload.secondaryColor}
+## DESIGN VISION
+Create a compelling, branded partnership proposal deck that positions the collaboration between ${payload.yourOrg} and ${payload.companyName} as mutually valuable and forward-thinking. This deck will be the visual anchor for partnership discussions and should communicate professionalism, innovation, and shared success.
 
-Create a professional partnership proposal deck design with:
-1. Design system specifications
-2. Color palette and typography
-3. Layout grid and spacing
-4. Component library
-5. Page/slide breakdown (6-8 slides)
-6. File structure in Figma
-7. Export specifications`;
+## BRAND GUIDELINES
+- **Primary Color**: ${payload.primaryColor} (headings, key callouts, CTAs)
+- **Secondary Color**: ${payload.secondaryColor} (accents, dividers, supporting elements)
+${payload.logoUrl ? `- **Logo**: ${payload.logoUrl} (featured prominently on title slide and footer)` : '- **Logo**: Include ${payload.yourOrg} and ${payload.companyName} logos with proper spacing'}
+- **Tone**: ${payload.designTone}
+- **Style**: ${styleDesc}
+
+## DESIGN SYSTEM REQUIREMENTS
+1. **Typography Hierarchy**
+   - H1: Large, bold headlines (40-56px) for section titles
+   - H2: Subheadings (28-32px) for key points
+   - Body: Clean, readable (14-16px) for descriptions
+   - Accent: Bold callouts for statistics/metrics
+
+2. **Layout Grid**
+   - 12-column grid system for consistency
+   - Generous white space (minimum 40px margins)
+   - Content width: 80% of slide for visual breathing room
+   - Consistent spacing: 16px, 24px, 32px, 48px increments
+
+3. **Visual Elements**
+   - Dividers: Subtle lines or color bars (use secondary color)
+   - Icons: Consistent style, 24-48px sizes
+   - Imagery: High-quality, modern photography or illustrations
+   - Data visualization: Clean charts, graphs (matches color palette)
+
+## SLIDE STRUCTURE (8-10 slides)
+1. **Cover Slide**: Impactful title with both logos, event name, date
+2. **Partnership Overview**: "Why we're here" - the opportunity statement
+3. **Strategic Fit**: Venn diagram or comparison showing complementary strengths
+4. **Company Profiles**: Side-by-side snapshots (${payload.companyName} & ${payload.yourOrg})
+5. **Proposed Deliverables**: Visual breakdown of concrete outputs
+6. **Timeline & Milestones**: Gantt-style or milestone visualization
+7. **Impact & Benefits**: Benefits for both parties, metrics/KPIs
+8. **Success Metrics**: How we measure partnership success
+9. **Next Steps**: Clear CTAs and contact information
+
+## DELIVERABLES
+- Mockup types: ${mockupTypes}
+- File structure: ${payload.figmaStructure}
+- Resolution: 1920x1080px (presentation) + export specs for print/web
+- Interactive elements: Hover states, animations noted (but not animated in Figma)
+- Brand consistency guide embedded in Figma file
+
+## TONE & FEELING
+- Professional yet approachable
+- Data-backed but visually engaging
+- Modern without being trendy
+- Focuses on partnership value, not individual pitches
+
+## KEY DESIGN PRINCIPLES
+✓ Visual hierarchy guides the viewer's eye to key messages
+✓ Data is presented beautifully, not just functionally
+✓ Plenty of white space to avoid cognitive overload
+✓ Consistent use of color for visual continuity
+✓ Typography is intentional and readable
+✓ Images/illustrations reinforce the partnership message
+✓ Every slide serves a purpose in telling the partnership story
+
+---
+
+Export as: Figma file + high-res PNG/PDF exports for presentations`;
 }
 
 function generateClaudePrompt(payload) {
-  return `Create visual mockups for ${payload.companyName} partnership proposal deck.
+  const styleDesc = getDesignStyleDescription(payload.designStyle);
 
-Context:
-- Event: ${payload.eventName}
-- Organization: ${payload.yourOrg}
-- Partner: ${payload.companyName}
-- Design Style: ${payload.designStyle}
-- Design Tone: ${payload.designTone}
+  return `# Visual Mockups: ${payload.companyName} x ${payload.yourOrg} Partnership Deck
 
-Generate mockups for 6-8 key slides showing:
-1. Cover slide with company branding
-2. Partnership overview
-3. Event details
-4. Key deliverables
-5. Timeline
-6. Impact & benefits
-7. Next steps
+## PROJECT BRIEF
+Create 8-10 compelling slide mockups for a partnership proposal presentation. These mockups should tell the story of a strategic collaboration between ${payload.yourOrg} and ${payload.companyName} for the ${payload.eventName} event, positioning the partnership as mutually beneficial and professionally executed.
 
-Use primary color (${payload.primaryColor}) and secondary color (${payload.secondaryColor}).
-Focus on clean, professional, modern design that communicates partnership value.`;
+## BRAND SPECIFICATIONS
+- **Event**: ${payload.eventName}
+- **Organization**: ${payload.yourOrg}
+- **Partner Company**: ${payload.companyName}
+- **Primary Brand Color**: ${payload.primaryColor}
+- **Secondary Brand Color**: ${payload.secondaryColor}
+${payload.logoUrl ? `- **Logo Reference**: ${payload.logoUrl}` : ''}
+- **Design Philosophy**: ${styleDesc}
+- **Visual Tone**: ${payload.designTone}
+
+## DESIGN DIRECTION
+Create slides that are:
+✓ **Visually Balanced**: Equal weight to text and whitespace
+✓ **Data-Forward**: Use charts, metrics, and visual hierarchies
+✓ **Brand-Consistent**: Colors, typography, and spacing feel cohesive
+✓ **Modern & Professional**: No dated design trends, timeless aesthetic
+✓ **Emotionally Resonant**: Communicate partnership value and shared vision
+✓ **Accessible**: High contrast, readable fonts, inclusive imagery
+
+## SLIDE BREAKDOWN
+
+**Slide 1: COVER/TITLE**
+- Large, bold headline: "${payload.companyName} + ${payload.yourOrg} Partnership"
+- Subheading: Event name and date
+- Both company logos positioned symmetrically
+- Background: Subtle gradient or pattern using brand colors
+- Overall feeling: "This is important, we're ready"
+
+**Slide 2: PARTNERSHIP OPPORTUNITY**
+- Headline: "Seizing the Moment"
+- Key message: Why this partnership, why now
+- Visual element: Timeline or progression arrows showing convergence
+- Supporting text: 2-3 punchy statements about mutual benefit
+- Color accent: Primary color for emphasis
+
+**Slide 3: STRATEGIC FIT**
+- Headline: "Complementary Strengths"
+- Visual: Venn diagram, comparison chart, or side-by-side company profiles
+- Include: Key differentiators for each organization
+- Data-driven: Use numbers, metrics where available
+- Secondary color for comparison elements
+
+**Slide 4: COMPANY SNAPSHOT (${payload.companyName})**
+- Company logo, name, tagline
+- 3-4 key facts (industry, size, mission, expertise)
+- Visual element: Brand icon or illustration
+- Clean card-like layout with breathing room
+
+**Slide 5: PROPOSED DELIVERABLES**
+- Headline: "What We'll Deliver"
+- Visual: Icons or illustrations for each deliverable
+- Format: Grid or card layout (4-6 items max)
+- Each item: Icon + title + brief description
+- Use primary color for callouts
+
+**Slide 6: TIMELINE & MILESTONES**
+- Headline: "Journey to Launch"
+- Visual: Horizontal timeline or milestone path
+- Key dates: Clearly marked phases (Planning, Development, Launch, etc.)
+- Color coding: Use secondary color for milestones
+- Progress indication: Bars or checkmarks showing progression
+
+**Slide 7: IMPACT & BENEFITS**
+- Headline: "Value for Both Parties"
+- Split layout: ${payload.yourOrg} benefits | ${payload.companyName} benefits
+- Use icons, numbers, and short phrases
+- Emphasize mutual gains, not one-sided value
+- Large, bold numbers for key metrics
+
+**Slide 8: SUCCESS METRICS**
+- Headline: "How We Measure Success"
+- Visual: Dashboard-style layout or metric cards
+- Include: 4-6 KPIs with target numbers
+- Visual representation: Gauges, progress bars, or charts
+- Color consistency: Primary color for progress indicators
+
+**Slide 9: NEXT STEPS & CALL TO ACTION**
+- Headline: "Let's Make This Happen"
+- Visual: Bold CTA button or arrow
+- Contact information: Names, emails, phone numbers
+- Timeline: "Decision by [date]" or "Kickoff [date]"
+- Closing sentiment: Confident, positive, forward-looking
+
+## MOCKUP REQUIREMENTS
+- **Format**: High-fidelity visual mockups (not wireframes)
+- **Resolution**: 1920x1080px (presentation standard)
+- **Style**: ${styleDesc}
+- **Imagery**: Modern, professional stock photos or illustrations (or describe style)
+- **Typography**: Sans-serif recommended for modern look
+- **Consistency**: Same design system applied to all slides
+- **Annotations**: Include design notes on color usage, spacing, typography
+
+## VISUAL STYLE GUIDE
+- **Primary Color (${payload.primaryColor}})**: Headlines, key CTAs, important callouts
+- **Secondary Color (${payload.secondaryColor}})**: Accents, supporting elements, secondary information
+- **White Space**: Minimum 40px margins, maximum visual density 70%
+- **Typography**: 2-3 font families max (1 header, 1 body)
+- **Icons**: Consistent line weight, minimal style
+- **Images**: High quality, diverse, professional
+
+## TONE & MESSAGING
+Each slide should communicate:
+- Confidence in the partnership
+- Clear mutual benefits
+- Professional execution
+- Shared vision for success
+- Respect for both organizations
+
+---
+
+Deliver: 8-10 polished, presentation-ready mockup images in sequence, each with descriptive captions explaining the design choices and messaging strategy.`;
 }
 
 function getToneDescription(tone) {
