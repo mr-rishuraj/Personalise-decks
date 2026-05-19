@@ -31,7 +31,7 @@ module.exports = async function handler(req, res) {
     const docBase64 = await createWordDoc(documentText);
 
     return res.status(200).json({
-      documentText: documentText.substring(0, 2000),
+      documentText: documentText,
       documentBase64: docBase64,
       figmaPrompt: figmaPrompt,
       claudePrompt: claudePrompt,

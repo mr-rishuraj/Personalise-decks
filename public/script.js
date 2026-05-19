@@ -293,57 +293,101 @@ docModal.addEventListener('click', (e) => {
 
 // Helper function to format document text as HTML
 function formatDocumentForDisplay(text) {
-  let html = text;
-
-  // Convert markdown headers to HTML
-  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
-  html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
-
-  // Convert bold and italic
-  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
-
-  // Convert line breaks to paragraphs
-  const lines = html.split('\n');
-  let inTable = false;
+  const lines = text.split('\n');
   let result = [];
+  let inTable = false;
+  let tableRows = [];
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].trim();
+    const line = lines[i];
+    const trimmed = line.trim();
 
-    if (line.startsWith('|')) {
-      if (!inTable) {
+    // Skip empty lines
+    if (!trimmed) {
+      if (inTable && tableRows.length > 0) {
         result.push('<table>');
-        inTable = true;
-      }
-
-      const cells = line.split('|').filter(c => c.trim());
-      const isHeader = i === 1 || lines[i - 1].includes('---');
-
-      if (isHeader) {
-        result.push('<tr>' + cells.map(c => `<th>${c.trim()}</th>`).join('') + '</tr>');
-      } else if (line !== '' && !line.includes('---')) {
-        result.push('<tr>' + cells.map(c => `<td>${c.trim()}</td>`).join('') + '</tr>');
-      }
-    } else {
-      if (inTable) {
+        tableRows.forEach((row, idx) => {
+          const isHeader = idx === 0 || idx === 1;
+          const cells = row.split('|').filter(c => c.trim());
+          if (cells.length > 0 && !row.includes('---')) {
+            const tag = isHeader ? 'th' : 'td';
+            result.push('<tr>' + cells.map(c => `<${tag}>${c.trim()}</${tag}>`).join('') + '</tr>');
+          }
+        });
         result.push('</table>');
         inTable = false;
+        tableRows = [];
+      }
+      continue;
+    }
+
+    // Check if it's a table row
+    if (trimmed.startsWith('|') && trimmed.endsWith('|')) {
+      if (!inTable) {
+        inTable = true;
+        tableRows = [];
+      }
+      tableRows.push(trimmed);
+    } else if (trimmed.includes('---')) {
+      // Skip separator rows
+      continue;
+    } else {
+      // Close table if open
+      if (inTable && tableRows.length > 0) {
+        result.push('<table>');
+        tableRows.forEach((row, idx) => {
+          const isHeader = idx === 0 || idx === 1;
+          const cells = row.split('|').filter(c => c.trim());
+          if (cells.length > 0) {
+            const tag = isHeader ? 'th' : 'td';
+            result.push('<tr>' + cells.map(c => `<${tag}>${c.trim()}</${tag}>`).join('') + '</tr>');
+          }
+        });
+        result.push('</table>');
+        inTable = false;
+        tableRows = [];
       }
 
-      if (line && !line.includes('---')) {
-        if (line.startsWith('<h')) {
-          result.push(line);
-        } else if (line) {
-          result.push(`<p>${line}</p>`);
-        }
+      // Handle headers
+      if (trimmed.startsWith('##')) {
+        let headerText = trimmed.replace(/^#+\s*/, '');
+        headerText = formatInlineMarkdown(headerText);
+        result.push(`<h2>${headerText}</h2>`);
+      } else if (trimmed.startsWith('#')) {
+        let headerText = trimmed.replace(/^#+\s*/, '');
+        headerText = formatInlineMarkdown(headerText);
+        result.push(`<h1>${headerText}</h1>`);
+      } else if (trimmed) {
+        // Regular paragraph
+        let paragraphText = formatInlineMarkdown(trimmed);
+        result.push(`<p>${paragraphText}</p>`);
       }
     }
   }
 
-  if (inTable) {
+  // Close any open table
+  if (inTable && tableRows.length > 0) {
+    result.push('<table>');
+    tableRows.forEach((row, idx) => {
+      const isHeader = idx === 0 || idx === 1;
+      const cells = row.split('|').filter(c => c.trim());
+      if (cells.length > 0) {
+        const tag = isHeader ? 'th' : 'td';
+        result.push('<tr>' + cells.map(c => `<${tag}>${c.trim()}</${tag}>`).join('') + '</tr>');
+      }
+    });
     result.push('</table>');
   }
 
   return result.join('');
+}
+
+// Helper to format inline markdown (bold, italic, etc)
+function formatInlineMarkdown(text) {
+  // Bold
+  text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  // Italic
+  text = text.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+  // Escape HTML
+  return text;
 }
