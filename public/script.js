@@ -27,6 +27,12 @@ const viewFullDocBtn = document.getElementById('viewFullDocBtn');
 const docModal = document.getElementById('docModal');
 const closeModalBtn = document.getElementById('closeModalBtn');
 const modalDocContent = document.getElementById('modalDocContent');
+const figmaModal = document.getElementById('figmaModal');
+const closeFigmaModalBtn = document.getElementById('closeFigmaModalBtn');
+const modalFigmaContent = document.getElementById('modalFigmaContent');
+const claudeModal = document.getElementById('claudeModal');
+const closeClaudeModalBtn = document.getElementById('closeClaudeModalBtn');
+const modalClaudeContent = document.getElementById('modalClaudeContent');
 const loadingScreen = document.getElementById('loadingScreen');
 const loadingStep = document.getElementById('loadingStep');
 
@@ -211,6 +217,7 @@ function displayResults(data) {
   // Display Figma prompt
   if (data.figmaPrompt) {
     figmaPromptPreview.textContent = data.figmaPrompt;
+    viewFullFigmaBtn.style.display = 'inline-block';
     copyFigmaBtn.style.display = 'inline-block';
     openFigmaBtn.style.display = 'inline-block';
   }
@@ -218,6 +225,7 @@ function displayResults(data) {
   // Display Claude prompt
   if (data.claudePrompt) {
     claudePromptPreview.textContent = data.claudePrompt;
+    viewFullClaudeBtn.style.display = 'inline-block';
     copyClaudeBtn.style.display = 'inline-block';
   }
 
@@ -288,6 +296,48 @@ closeModalBtn.addEventListener('click', () => {
 docModal.addEventListener('click', (e) => {
   if (e.target === docModal) {
     docModal.classList.add('hidden');
+  }
+});
+
+// View full Figma prompt
+const viewFullFigmaBtn = document.getElementById('viewFullFigmaBtn');
+viewFullFigmaBtn.addEventListener('click', () => {
+  if (generatedData && generatedData.figmaPrompt) {
+    modalFigmaContent.textContent = generatedData.figmaPrompt;
+    figmaModal.classList.remove('hidden');
+  }
+});
+
+// Close Figma modal
+closeFigmaModalBtn.addEventListener('click', () => {
+  figmaModal.classList.add('hidden');
+});
+
+// Close Figma modal when clicking outside
+figmaModal.addEventListener('click', (e) => {
+  if (e.target === figmaModal) {
+    figmaModal.classList.add('hidden');
+  }
+});
+
+// View full Claude prompt
+const viewFullClaudeBtn = document.getElementById('viewFullClaudeBtn');
+viewFullClaudeBtn.addEventListener('click', () => {
+  if (generatedData && generatedData.claudePrompt) {
+    modalClaudeContent.textContent = generatedData.claudePrompt;
+    claudeModal.classList.remove('hidden');
+  }
+});
+
+// Close Claude modal
+closeClaudeModalBtn.addEventListener('click', () => {
+  claudeModal.classList.add('hidden');
+});
+
+// Close Claude modal when clicking outside
+claudeModal.addEventListener('click', (e) => {
+  if (e.target === claudeModal) {
+    claudeModal.classList.add('hidden');
   }
 });
 

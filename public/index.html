@@ -268,6 +268,9 @@
             <p style="text-align: center; color: #999;">Figma prompt will appear here...</p>
           </div>
           <div class="output-actions">
+            <button id="viewFullFigmaBtn" class="btn-action" style="display:none;">
+              🖥️ View Full Prompt
+            </button>
             <button id="copyFigmaBtn" class="btn-action" style="display:none;">
               📋 Copy to Clipboard
             </button>
@@ -284,6 +287,9 @@
             <p style="text-align: center; color: #999;">Claude Design prompt will appear here...</p>
           </div>
           <div class="output-actions">
+            <button id="viewFullClaudeBtn" class="btn-action" style="display:none;">
+              🖥️ View Full Prompt
+            </button>
             <button id="copyClaudeBtn" class="btn-action" style="display:none;">
               📋 Copy to Clipboard
             </button>
@@ -318,6 +324,37 @@
       </div>
     </div>
   </div>
+
+  <!-- FIGMA PROMPT MODAL -->
+  <div id="figmaModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Figma Design Brief</h2>
+        <button id="closeFigmaModalBtn" class="modal-close">✕</button>
+      </div>
+      <div id="modalFigmaContent" class="modal-body" style="white-space: pre-wrap; font-family: monospace;">
+        <!-- Figma prompt will be rendered here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- CLAUDE PROMPT MODAL -->
+  <div id="claudeModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Claude Design Brief</h2>
+        <button id="closeClaudeModalBtn" class="modal-close">✕</button>
+      </div>
+      <div id="modalClaudeContent" class="modal-body" style="white-space: pre-wrap; font-family: monospace;">
+        <!-- Claude prompt will be rendered here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p>made by love from <a href="https://www.linkedin.com/in/rishu-raj-gupta/" target="_blank">Rishu Raj Gupta</a></p>
+  </footer>
 
   <script src="script.js"></script>
 </body>
