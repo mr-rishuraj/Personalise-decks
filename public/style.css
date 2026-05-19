@@ -299,14 +299,24 @@ body {
   color: var(--secondary);
 }
 
-.doc-preview,
-.prompt-preview {
+.doc-preview {
   background: var(--light);
   padding: 1.2rem;
   border-radius: 0.4rem;
   border-left: 4px solid var(--accent);
   max-height: 400px;
   overflow-y: auto;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.prompt-preview {
+  background: var(--light);
+  padding: 1.2rem;
+  border-radius: 0.4rem;
+  border-left: 4px solid var(--accent);
   font-size: 0.95rem;
   line-height: 1.6;
   white-space: pre-wrap;
