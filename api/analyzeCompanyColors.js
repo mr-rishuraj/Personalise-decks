@@ -1,3 +1,6 @@
+// In-memory cache for color analysis (helps during active sessions)
+const colorCache = new Map();
+
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -22,6 +25,19 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({ message: 'Either company website or company text is required' });
     }
 
+    // Create cache key from company name (normalized)
+    const cacheKey = companyName.toLowerCase().trim();
+
+    // Check if result is cached
+    if (colorCache.has(cacheKey)) {
+      console.log(`✓ Cache hit for: ${companyName}`);
+      const cachedResult = colorCache.get(cacheKey);
+      return res.status(200).json({
+        ...cachedResult,
+        cached: true
+      });
+    }
+
     console.log(`Analyzing colors for: ${companyName}`);
 
     let contentToAnalyze = companyText || '';
@@ -31,23 +47,31 @@ module.exports = async function handler(req, res) {
         contentToAnalyze = await fetchWebsiteContent(companyWebsite);
       } catch (error) {
         console.log('Could not fetch website, returning default colors:', error.message);
-        return res.status(200).json({
+        const defaultResult = {
           primaryColor: '#1F3864',
           secondaryColor: '#2E5090',
           reasoning: 'Could not fetch website. Using default professional colors.',
           success: false
-        });
+        };
+        // Cache the default result
+        colorCache.set(cacheKey, defaultResult);
+        return res.status(200).json(defaultResult);
       }
     }
 
     const colors = await extractColorsWithGemini(companyName, contentToAnalyze);
 
-    return res.status(200).json({
+    const result = {
       primaryColor: colors.primary,
       secondaryColor: colors.secondary,
       reasoning: colors.reasoning,
       success: true
-    });
+    };
+
+    // Cache the successful result
+    colorCache.set(cacheKey, result);
+
+    return res.status(200).json(result);
 
   } catch (error) {
     console.error('Color analysis error:', error.message);

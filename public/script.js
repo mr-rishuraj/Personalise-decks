@@ -50,6 +50,18 @@ const loadingSteps = [
 let currentStep = 0;
 const DEFAULT_PITCH_DECK = 'Ignite_25_pitchdeck.pdf';
 
+// Cache utilities
+function clearColorCache() {
+  const keys = [];
+  for (let key in localStorage) {
+    if (key.startsWith('colorCache_')) {
+      keys.push(key);
+    }
+  }
+  keys.forEach(key => localStorage.removeItem(key));
+  console.log(`✓ Cleared ${keys.length} cached color analyses`);
+}
+
 // Initialize with default values
 window.addEventListener('DOMContentLoaded', () => {
   const pitchDeckInput = document.getElementById('pitchDeckLink');
@@ -111,6 +123,19 @@ companyText.addEventListener('blur', triggerColorAnalysis);
 
 async function analyzeCompanyColors(companyName, companyWebsite, companyTextValue) {
   try {
+    // Check browser cache first (localStorage)
+    const cacheKey = `colorCache_${companyName.toLowerCase().trim()}`;
+    const cachedResult = localStorage.getItem(cacheKey);
+
+    if (cachedResult) {
+      const result = JSON.parse(cachedResult);
+      primaryColorInput.value = result.primaryColor;
+      secondaryColorInput.value = result.secondaryColor;
+      console.log(`✓ Using cached colors for ${companyName}`);
+      showColorNotification(result.primaryColor, result.secondaryColor, result.reasoning + ' (cached)');
+      return;
+    }
+
     const payload = {
       companyName: companyName,
       companyWebsite: companyWebsite || undefined,
@@ -135,6 +160,17 @@ async function analyzeCompanyColors(companyName, companyWebsite, companyTextValu
     if (result.success && result.primaryColor && result.secondaryColor) {
       primaryColorInput.value = result.primaryColor;
       secondaryColorInput.value = result.secondaryColor;
+
+      // Cache the result in browser
+      try {
+        localStorage.setItem(cacheKey, JSON.stringify({
+          primaryColor: result.primaryColor,
+          secondaryColor: result.secondaryColor,
+          reasoning: result.reasoning
+        }));
+      } catch (e) {
+        console.log('Could not cache colors (storage full)');
+      }
 
       console.log(`🎨 Brand colors detected: Primary=${result.primaryColor}, Secondary=${result.secondaryColor}`);
       console.log(`📝 Reasoning: ${result.reasoning}`);
