@@ -5,7 +5,23 @@
       "PowerShell(Copy-Item *)",
       "Bash(git add *)",
       "Bash(git commit *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(npm list *)",
+      "Bash(npx vercel *)",
+      "Bash(curl -s http://localhost:3000)",
+      "Bash(open *)",
+      "Bash(screencapture -x /tmp/dark_theme_screenshot.png)",
+      "Read(//tmp/**)",
+      "Bash(curl -s -X POST http://localhost:3000/api/analyzeCompanyColors -H 'Content-Type: application/json' -d '{ *)",
+      "Bash(pkill -f \"vercel dev\")",
+      "Bash(curl -s -X POST http://localhost:3001/api/analyzeCompanyColors -H 'Content-Type: application/json' -d '{ *)",
+      "Bash(chmod +x /tmp/test_flow.sh)",
+      "Bash(/tmp/test_flow.sh)",
+      "Bash(cp index.html generator.html)",
+      "Bash(mv landing.html index.html)",
+      "Bash(python3 *)",
+      "Bash(curl -s http://localhost:3001)",
+      "Bash(curl *)"
     ]
   }
 }

@@ -84,6 +84,131 @@ companyText.addEventListener('input', () => {
   }
 });
 
+// Company color analysis
+let colorAnalysisTimeout;
+const companyNameInput = document.getElementById('companyName');
+const companyWebsiteInput = document.getElementById('companyWebsite');
+const primaryColorInput = document.getElementById('primaryColor');
+const secondaryColorInput = document.getElementById('secondaryColor');
+
+function triggerColorAnalysis() {
+  clearTimeout(colorAnalysisTimeout);
+
+  colorAnalysisTimeout = setTimeout(async () => {
+    const companyName = companyNameInput.value.trim();
+    const companyWebsite = companyWebsiteInput.value.trim();
+    const companyTextValue = companyText.value.trim();
+
+    if (companyName && (companyWebsite || companyTextValue)) {
+      await analyzeCompanyColors(companyName, companyWebsite, companyTextValue);
+    }
+  }, 1500);
+}
+
+companyNameInput.addEventListener('blur', triggerColorAnalysis);
+companyWebsiteInput.addEventListener('blur', triggerColorAnalysis);
+companyText.addEventListener('blur', triggerColorAnalysis);
+
+async function analyzeCompanyColors(companyName, companyWebsite, companyTextValue) {
+  try {
+    const payload = {
+      companyName: companyName,
+      companyWebsite: companyWebsite || undefined,
+      companyText: companyTextValue || undefined
+    };
+
+    const response = await fetch('/api/analyzeCompanyColors', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      console.log('Color analysis failed, keeping current colors');
+      return;
+    }
+
+    const result = await response.json();
+
+    if (result.success && result.primaryColor && result.secondaryColor) {
+      primaryColorInput.value = result.primaryColor;
+      secondaryColorInput.value = result.secondaryColor;
+
+      console.log(`🎨 Brand colors detected: Primary=${result.primaryColor}, Secondary=${result.secondaryColor}`);
+      console.log(`📝 Reasoning: ${result.reasoning}`);
+
+      showColorNotification(result.primaryColor, result.secondaryColor, result.reasoning);
+    }
+  } catch (error) {
+    console.log('Error analyzing company colors:', error.message);
+  }
+}
+
+function showColorNotification(primaryColor, secondaryColor, reasoning) {
+  const notification = document.createElement('div');
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--bg-secondary);
+    border: 2px solid ${primaryColor};
+    border-radius: 8px;
+    padding: 1rem;
+    max-width: 300px;
+    z-index: 999;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    animation: slideIn 0.3s ease-out;
+  `;
+
+  notification.innerHTML = `
+    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+      <span style="font-size: 1.5rem;">🎨</span>
+      <strong style="color: var(--text-primary);">Brand Colors Detected!</strong>
+    </div>
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+      <div style="width: 40px; height: 40px; background: ${primaryColor}; border-radius: 4px;"></div>
+      <div style="width: 40px; height: 40px; background: ${secondaryColor}; border-radius: 4px;"></div>
+    </div>
+    <small style="color: var(--text-secondary); display: block;">${reasoning}</small>
+  `;
+
+  document.body.appendChild(notification);
+
+  setTimeout(() => {
+    notification.style.animation = 'slideOut 0.3s ease-out';
+    setTimeout(() => notification.remove(), 300);
+  }, 4000);
+}
+
+// Add animation styles
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes slideIn {
+    from {
+      transform: translateX(400px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideOut {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(400px);
+      opacity: 0;
+    }
+  }
+`;
+document.head.appendChild(style);
+
 // Toggle Claude API key input
 apiChoiceSelect.addEventListener('change', (e) => {
   if (e.target.value === 'claude') {
