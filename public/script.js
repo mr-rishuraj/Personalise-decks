@@ -566,3 +566,28 @@ function formatInlineMarkdown(text) {
   // Escape HTML
   return text;
 }
+
+// Initialize: Show how-to-use modal on page load (check if user has seen it before)
+document.addEventListener('DOMContentLoaded', function() {
+  const hasSeenTutorial = localStorage.getItem('personalizeDecks_tutorial_seen');
+  if (!hasSeenTutorial) {
+    setTimeout(() => {
+      const howToModal = document.getElementById('howToUseModal');
+      if (howToModal) {
+        howToModal.classList.remove('hidden');
+        localStorage.setItem('personalizeDecks_tutorial_seen', 'true');
+      }
+    }, 500);
+  }
+
+  // Help button handler
+  const helpBtn = document.getElementById('helpBtn');
+  if (helpBtn) {
+    helpBtn.addEventListener('click', function() {
+      const howToModal = document.getElementById('howToUseModal');
+      if (howToModal) {
+        howToModal.classList.remove('hidden');
+      }
+    });
+  }
+});

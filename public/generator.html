@@ -7,6 +7,16 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- NAVIGATION BAR -->
+  <nav class="navbar active">
+    <a href="index.html" class="navbar-brand">
+      ← Back to Home
+    </a>
+    <div class="navbar-nav">
+      <button id="helpBtn" class="nav-btn">? Help</button>
+    </div>
+  </nav>
+
   <div class="container">
     <!-- LEFT PANEL - INPUT -->
     <div class="panel left-panel">
@@ -351,10 +361,45 @@
     </div>
   </div>
 
-  <!-- FOOTER -->
-  <footer class="footer">
-    <p>MADE BY LOVE FROM <a href="https://www.linkedin.com/in/rishu-raj-gupta/" target="_blank">RISHU RAJ GUPTA</a></p>
-  </footer>
+  <!-- HOW TO USE MODAL -->
+  <div id="howToUseModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>📚 How to Use Personalise Decks</h2>
+        <button class="modal-close" onclick="document.getElementById('howToUseModal').classList.add('hidden')">✕</button>
+      </div>
+      <div class="modal-body">
+        <h3>Welcome! Here's how to create your perfect partnership proposal:</h3>
+
+        <h4>Step 1: Fill Basic Information</h4>
+        <p>Start by entering the partnership title, event name, your organization, and the partner company name. These details will be used throughout the document.</p>
+
+        <h4>Step 2: Add Company Information</h4>
+        <p>Either provide a company website URL or paste company details (up to 10,000 words). Our AI will analyze this to extract brand colors and insights. The tool automatically detects primary and secondary brand colors from the website or text.</p>
+
+        <h4>Step 3: Customize Your Document</h4>
+        <p>Choose your document length, tone, language, and add any specific requirements or notes. You can enable multiple output formats (Word, Figma, Claude design brief).</p>
+
+        <h4>Step 4: Generate & Download</h4>
+        <p>Click "Generate Proposal" and your customized partnership proposal will be created instantly. You'll get:</p>
+        <ul style="margin: 0.5rem 0 0 1.5rem; color: var(--text-secondary);">
+          <li><strong>Word Document</strong> - Ready to send to partners</li>
+          <li><strong>Figma Design Brief</strong> - For your design team</li>
+          <li><strong>Claude Design Prompt</strong> - For AI-powered refinements</li>
+        </ul>
+
+        <h4>💡 Pro Tips</h4>
+        <ul style="margin: 0.5rem 0 0 1.5rem; color: var(--text-secondary);">
+          <li>Use specific company websites for better color detection</li>
+          <li>Add unique details in the "Additional Notes" section for personalized proposals</li>
+          <li>Experiment with different tones to match your brand voice</li>
+          <li>The brand colors are auto-detected from company information</li>
+        </ul>
+
+        <button class="btn-primary" style="margin-top: 1.5rem; width: 100%;" onclick="document.getElementById('howToUseModal').classList.add('hidden')">Get Started →</button>
+      </div>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
