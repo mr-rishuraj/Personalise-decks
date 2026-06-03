@@ -22,7 +22,9 @@
       "Bash(python3 *)",
       "Bash(curl -s http://localhost:3001)",
       "Bash(curl *)",
-      "Bash(grep -o \"--primary-dark\\\\|--gradient-primary\")"
+      "Bash(grep -o \"--primary-dark\\\\|--gradient-primary\")",
+      "Bash(npm run *)",
+      "mcp__claude_ai_Vercel__web_fetch_vercel_url"
     ]
   }
 }
