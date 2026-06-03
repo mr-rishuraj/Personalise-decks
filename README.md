@@ -64,7 +64,8 @@ A modern, AI-powered web application that generates professional partnership pro
 ### Prerequisites
 - Node.js 18+ installed
 - npm or yarn package manager
-- Gemini API key (free from https://aistudio.google.com/app/apikey)
+- 1-4 Gemini API keys (free from https://aistudio.google.com/app/apikey)
+  - **Note:** Using multiple keys distributes quota across them, reducing rate-limit errors
 
 ### Installation Steps
 
@@ -81,9 +82,22 @@ npm install
 3. **Set up environment variables**
 Create a `.env` file in the root directory:
 ```env
+# Use single key:
 GEMINI_API_KEY=your-gemini-api-key-here
+
+# Or use multiple keys (recommended to avoid quota limits):
+GEMINI_API_KEY_1=your-first-gemini-api-key
+GEMINI_API_KEY_2=your-second-gemini-api-key
+GEMINI_API_KEY_3=your-third-gemini-api-key
+GEMINI_API_KEY_4=your-fourth-gemini-api-key
+
 NODE_ENV=development
 ```
+
+**To get Gemini API keys:**
+1. Visit [Google AI Studio](https://aistudio.google.com/app/apikey)
+2. Click "Create API Key" for each key you want to add
+3. Add them to your `.env` file as shown above
 
 4. **Run development server**
 ```bash
@@ -122,10 +136,14 @@ git push -u origin main
 ### Step 3: Add Environment Variables
 
 1. In Vercel dashboard, go to **Settings** → **Environment Variables**
-2. Add these variables:
-   - **Name**: `GEMINI_API_KEY`
-   - **Value**: Your Gemini API key
-   - Click "Add"
+2. Add Gemini API keys (one key is fine, but multiple keys distribute quota):
+   - **Name**: `GEMINI_API_KEY_1` | **Value**: Your first Gemini API key
+   - **Name**: `GEMINI_API_KEY_2` | **Value**: Your second Gemini API key
+   - **Name**: `GEMINI_API_KEY_3` | **Value**: Your third Gemini API key
+   - **Name**: `GEMINI_API_KEY_4` | **Value**: Your fourth Gemini API key (optional)
+   
+   Or use a single key:
+   - **Name**: `GEMINI_API_KEY` | **Value**: Your Gemini API key
 
 3. Deploy!
 

@@ -115,12 +115,23 @@ async function fetchWebsiteContent(websiteUrl) {
 }
 
 async function extractColorsWithGemini(companyName, contentToAnalyze) {
-  const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+  // Get all available API keys and rotate through them
+  const apiKeys = [
+    process.env.GEMINI_API_KEY_1 || process.env.GEMINI_API_KEY,
+    process.env.GEMINI_API_KEY_2,
+    process.env.GEMINI_API_KEY_3,
+    process.env.GEMINI_API_KEY_4
+  ].filter(Boolean); // Remove undefined keys
+
+  if (apiKeys.length === 0) {
+    throw new Error('No Gemini API keys configured');
+  }
+
+  // Rotate through keys randomly to distribute quota
+  const selectedKey = apiKeys[Math.floor(Math.random() * apiKeys.length)];
   const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent';
 
-  if (!GEMINI_API_KEY) {
-    throw new Error('Gemini API key not configured');
-  }
+  console.log(`Using Gemini API key ${apiKeys.indexOf(selectedKey) + 1}/${apiKeys.length}`);
 
   const prompt = `What are the primary and secondary brand colors for ${companyName}?
 Info: ${contentToAnalyze.substring(0, 100)}
@@ -131,7 +142,7 @@ Answer with ONLY these two hex colors, one per line:
 
 
   try {
-    const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+    const response = await fetch(`${GEMINI_API_URL}?key=${selectedKey}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
